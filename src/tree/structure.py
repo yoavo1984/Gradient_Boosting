@@ -22,7 +22,7 @@ class RegressionTreeNode(object):
         make the node into a terminal (leaf node) and set its constant value to c.
         :return: 
         """
-        self.c = 10
+        self.const = 10
 
     def split(self, j, s):
         # Set j and s
@@ -38,7 +38,7 @@ class RegressionTreeNode(object):
 class RegressionTree(object):
     root = None
 
-    def __init__(self):
+    def __init__(self, root):
         pass
 
     def get_root(self):
@@ -56,7 +56,7 @@ class RegressionTreeEnsemble(object):
     # An ordered collection of type RegressionTree
     trees = []
 
-    # The weight associated with each regression tree.
+    # The weights (beta) associated with each regression tree.
     weights = []
 
     # M - the number of regression trees.
