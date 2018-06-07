@@ -1,4 +1,5 @@
 class Dataset(object):
-    def __init__(self, data_subset):
-        pass
+    dataframe = None
 
+    def __init__(self, data_subset):
+        self.dataframe = data_subset

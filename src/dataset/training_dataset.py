@@ -1,9 +1,9 @@
-from src.dataset import Dataset
+from src.dataset.dataset import Dataset
 
 
 class TrainingDataset(Dataset):
-    def __init__(self):
-        pass
+    def __init__(self, data_subset):
+        super().__init__(data_subset)
 
     def code_categorial_features(self):
         """

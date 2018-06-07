@@ -1,4 +1,4 @@
-from src.dataset import Dataset
+from src.dataset.dataset import Dataset
 
 
 class TestDataset(Dataset):
