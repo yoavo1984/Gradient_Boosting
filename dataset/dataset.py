@@ -1,8 +1,4 @@
-def read_data(path_to_file):
-    pass
+class Dataset(object):
+    def __init__(self, data_subset):
+        pass
 
-    # Read the data file.
-
-    # Remove the id field.
-
-    # Remove entries for which the Saleprice attribute is not known.
