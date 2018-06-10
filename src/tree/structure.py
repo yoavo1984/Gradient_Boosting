@@ -12,7 +12,10 @@ class RegressionTreeNode(object):
     right_descendant = None
 
     # value of the node.
-    const = 0
+    const = -1
+
+    # Flag for leaf or not
+    leaf = False
 
     def __init__(self):
         pass
@@ -23,6 +26,7 @@ class RegressionTreeNode(object):
         :return: 
         """
         self.const = c
+        self.leaf = True
 
     def split(self, j, s):
         # Set j and s
@@ -38,23 +42,39 @@ class RegressionTreeNode(object):
     def print_sub_tree(self):
         pass
 
+    def is_leaf(self):
+        return self.leaf
+
 
 class RegressionTree(object):
     root = None
 
     def __init__(self, root):
         self.root = root
-        pass
 
     def get_root(self):
         return self.root
 
-    def evaluate (x):
+    def evaluate (self, x):
         """
         For a vector valued x compute the value of the function represented by the tree.
         :return: The predicted value of x by the tree.
         """
-        return 0.0
+        # start with the root.
+        current_node = self.root
+
+        # While node is not a leaf.
+        while not current_node.is_leaf():
+            j = current_node.j
+            s = current_node.s
+
+            # split according to current node.
+            if x[j] <= s:
+                current_node = current_node.left_descendant
+            else:
+                current_node = current_node.right_descendant
+
+        return current_node.const
 
 
 class RegressionTreeEnsemble(object):
