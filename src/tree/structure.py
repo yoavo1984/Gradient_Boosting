@@ -17,12 +17,12 @@ class RegressionTreeNode(object):
     def __init__(self):
         pass
 
-    def make_terminal(self):
+    def make_terminal(self, c):
         """
         make the node into a terminal (leaf node) and set its constant value to c.
         :return: 
         """
-        self.const = 10
+        self.const = c
 
     def split(self, j, s):
         # Set j and s
@@ -30,6 +30,10 @@ class RegressionTreeNode(object):
         self.s = s
 
         # Instantiate left and right descendants.
+        self.left_descendant = RegressionTreeNode()
+        self.right_descendant = RegressionTreeNode()
+
+        return self.left_descendant, self.right_descendant
 
     def print_sub_tree(self):
         pass
@@ -39,6 +43,7 @@ class RegressionTree(object):
     root = None
 
     def __init__(self, root):
+        self.root = root
         pass
 
     def get_root(self):
