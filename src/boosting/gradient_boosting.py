@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 # Local imports
 from src.boosting.pratition import Partition
@@ -24,7 +25,7 @@ def cart(training_set, max_depth, min_node_size):
     root_partition = Partition(training_set, root)
 
     depth[0].append(root_partition)
-    for k in range(max_depth-2):
+    for k in range(max_depth-1):
         # Build tree
         for partition in depth[k]:
             node = partition.get_node()
@@ -61,7 +62,7 @@ def create_left_and_right_partition(node, partition, j, s):
 
     return partition_left, partition_right
 
-def gbrt(train_set, num_trees, max_depth, min_node_size ,test_set):
+def gbrt(train_set, num_trees, max_depth, min_node_size, test_set):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param num_trees: 
@@ -78,4 +79,9 @@ def gbrt(train_set, num_trees, max_depth, min_node_size ,test_set):
     return tree_ensemble
 
 if __name__ == "__main__":
-    pass
+    np.random.seed(125)
+
+    data = np.random.randint(0, 20, size=(10,3))
+    df = pd.DataFrame(data, columns=["x1", "x2", "y"])
+    tree = cart(df, 3, 2)
+    print(tree)
