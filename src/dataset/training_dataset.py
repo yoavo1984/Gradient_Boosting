@@ -61,3 +61,26 @@ class TrainingDataset(Dataset):
     def fill_missing_values(self):
         self.mean_imputation()
         self.code_categorial_features()
+
+    def get_training_mean(self):
+        return self.dataframe.SalePrice.mean()
+
+    def get_sample_mean(self, sample):
+        return sample.SalePrice.mean()
+
+    def get_minibatch(self, p):
+        batch = self.dataframe.sample(frac=p, replace=False, weights=None, random_state=43).copy()
+        return batch
+
+    def get_training_data_with_y_columns(self):
+        tmp = self.dataframe.copy()
+        tmp.rename(index=str, columns={"SalePrice": "y"})
+        return tmp
+
+    def get_data_with_y_columns(self, sample):
+        tmp = sample.copy()
+        tmp.rename(index=str, columns={"SalePrice": "y"})
+        return tmp
+
+
+
