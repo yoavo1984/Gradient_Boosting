@@ -37,11 +37,13 @@ class Partition(object):
     def get_optimal_partition(self, min_node_size):
         instances = self.instances
         found_partition = False
+
+        # We will save the best partition cost, feature and feature value.
+        best_partition = (float("inf"), 0, 0)
+
         for feature in instances.columns[:-1]:
             values = instances[feature].unique()
 
-            # We will save the best partition cost, feature and feature value.
-            best_partition = (float("inf"), 0, 0)
             for val in values:
                 left = instances[instances[feature] <= val]
                 right = instances[instances[feature] > val]
@@ -61,7 +63,6 @@ class Partition(object):
         else:
             return -1, -1
 
-
     def split(self, j, s):
         """
         splits the instnaces in the partition into 2 according to supplied j,s 
@@ -79,3 +80,7 @@ class Partition(object):
         :return: The average value across all the instances.
         """
         return self.instances["y"].mean()
+
+    def get_error(self):
+        const = self.get_partition_average()
+        return self.instances.apply(lambda row: (row['y']-const)**2, axis=1).sum()
