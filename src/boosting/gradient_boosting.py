@@ -62,19 +62,45 @@ def create_left_and_right_partition(node, partition, j, s):
 
     return partition_left, partition_right
 
-def gbrt(train_set, num_trees, max_depth, min_node_size, test_set):
+
+def gbrt(train_set, num_trees, max_depth, min_node_size, test_set=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
+    :param train_set: 
     :param num_trees: 
     :param max_depth: 
     :param min_node_size: 
     :return: 
     """
+    # Create the ensemble object
     tree_ensemble = RegressionTreeEnsemble()
-    for _ in num_trees:
-        new_tree = cart(max_depth, min_node_size)
-        weight = 1
+
+    # Compute f_0
+    f0 = train_set.get_dataset_target_mean()
+    tree_ensemble.set_initial_constant(f0)
+
+    for tree_number in range(num_trees):
+        # Get mini batch from training set
+        instances = train_set.sample_minibatch()
+
+        # Compute residual for each instance in mini-batch
+        instances["y"] = instances.apply(lambda row: -1 * (row['y'] - tree_ensemble.evaluate(row, tree_number)), axis=1)
+
+        # Build new tree using CART
+        new_tree = cart(instances, max_depth, min_node_size)
+
+        # Compute new tree weight
+        nominator = instances.apply(lambda row: row["y"]*(new_tree.evaluate(row)), axis=1).sum()
+        denominator = instances.apply(lambda row: (new_tree.evaluate(row))**2, axis=1).sum()
+        weight = nominator / denominator
+
+        # Add tree to ensemble
         tree_ensemble.add_tree(new_tree, weight)
+
+        # Compute training error
+        train_instances = train_set.get_dataframe_copy()
+        cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number+1), 2)).sum()
+        print("Cost after {} trees is : {}".format(tree_number+1, cost))
 
     return tree_ensemble
 
