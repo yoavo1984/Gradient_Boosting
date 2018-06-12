@@ -1,12 +1,13 @@
 from src.dataset.dataset import Dataset
 import pandas as pd
 
+
 class TrainingDataset(Dataset):
     imputation_map = {}
     coding_map = {}
 
-    def __init__(self, data_subset):
-        super().__init__(data_subset)
+    def __init__(self, data_subset, target_name):
+        super().__init__(data_subset, target_name)
         self.fill_missing_values()
 
     def code_categorial_features(self):
@@ -24,10 +25,10 @@ class TrainingDataset(Dataset):
             unique_vals_dict = {}
             for val in unique_vals:
                 if pd.isnull(val):
-                    nan_mean = self.dataframe[self.dataframe[col].isnull()].SalePrice.mean()
+                    nan_mean = self.dataframe[self.dataframe[col].isnull()].y.mean()
                     unique_vals_dict[val] = nan_mean
                 else:
-                    val_mean = self.dataframe[self.dataframe[col] == val].SalePrice.mean()
+                    val_mean = self.dataframe[self.dataframe[col] == val].y.mean()
 
                 unique_vals_dict[val] = val_mean
 
@@ -62,25 +63,11 @@ class TrainingDataset(Dataset):
         self.mean_imputation()
         self.code_categorial_features()
 
-    def get_training_mean(self):
-        return self.dataframe.SalePrice.mean()
-
     def get_sample_mean(self, sample):
-        return sample.SalePrice.mean()
-
-    def get_minibatch(self, p):
-        batch = self.dataframe.sample(frac=p, replace=False, weights=None, random_state=43).copy()
-        return batch
+        return sample.y.mean()
 
     def get_training_data_with_y_columns(self):
-        tmp = self.dataframe.copy()
-        tmp.rename(index=str, columns={"SalePrice": "y"})
-        return tmp
-
-    def get_data_with_y_columns(self, sample):
-        tmp = sample.copy()
-        tmp.rename(index=str, columns={"SalePrice": "y"})
-        return tmp
+        return self.dataframe.copy()
 
 
 
