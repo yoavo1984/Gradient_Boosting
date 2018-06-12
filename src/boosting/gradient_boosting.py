@@ -35,6 +35,7 @@ def cart(training_set, max_depth, min_node_size):
             if j != -1:
                 partition_left, partition_right = create_left_and_right_partition(node, partition, j, s)
 
+
                 # Add nodes and partitions to the next depth
                 depth[k+1].append(partition_left)
                 depth[k+1].append(partition_right)
@@ -59,6 +60,10 @@ def create_left_and_right_partition(node, partition, j, s):
     partition_left, partition_right = partition.split(j, s)
     partition_left.set_node(node_left)
     partition_right.set_node(node_right)
+
+    # updating node error
+    node_left.error = partition_left.get_error()
+    node_right.error = partition_right.get_error()
 
     return partition_left, partition_right
 
@@ -99,8 +104,9 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, test_set=None):
 
         # Compute training error
         train_instances = train_set.get_dataframe_copy()
-        cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number+1), 2)).sum()
-        print("Cost after {} trees is : {}".format(tree_number+1, cost))
+        cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number+1), 2), axis=1).sum()
+        print("Cost after {} trees is : {}".format(tree_number+1, cost / train_instances.shape[0]))
+        print("New Tree weight = {}".format(weight))
 
     return tree_ensemble
 
