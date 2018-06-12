@@ -9,13 +9,12 @@ from src.dataset.training_dataset import TrainingDataset
 
 
 def read_data(path_to_file):
-    GENERAL_PATH = "C:/Users/koren/Documents/Gradient_Boosting/"
     DATA_PATH = os.path.join(path_to_file, 'train.csv')
     COPY_PATH = os.path.join(path_to_file, 'train_Copy.csv')
     # Read the data file.
-    df_all = pd.read_csv(GENERAL_PATH+DATA_PATH)
+    df_all = pd.read_csv(DATA_PATH)
     # save a copy of the data
-    copyfile(GENERAL_PATH+DATA_PATH, GENERAL_PATH+COPY_PATH)
+    copyfile(DATA_PATH, COPY_PATH)
     # Remove the id field.
     df_all.drop(['Id'], axis=1, inplace=True)
     # Remove entries for which the Saleprice attribute is not known.
@@ -52,7 +51,7 @@ def create_data(path_to_file):
     threshold = 0.8
     dataframe = read_data(path_to_file)
     train, test = create_raw_training_and_test_sets(dataframe, threshold)
-    train = TrainingDataset(train)
-    test = TestDataset(test, train.get_coding_map(), train.get_imputation_map())
+    train = TrainingDataset(train, "SalePrice")
+    test = TestDataset(test, "SalePrice", train.get_coding_map(), train.get_imputation_map())
     return train, test
 

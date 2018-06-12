@@ -2,8 +2,8 @@ from src.dataset.dataset import Dataset
 
 
 class TestDataset(Dataset):
-    def __init__(self, data_subset, coding_map, imputation_map):
-        super().__init__(data_subset)
+    def __init__(self, data_subset, target_name,  coding_map, imputation_map):
+        super().__init__(data_subset, target_name)
         self.fill_missing_values(coding_map, imputation_map)
 
     def code_categorial_features(self, coding_map):
