@@ -17,6 +17,9 @@ class RegressionTreeNode(object):
     # Flag for leaf or not
     leaf = False
 
+    # node error
+    error = 0
+
     def __init__(self):
         pass
 
@@ -96,18 +99,23 @@ class RegressionTreeEnsemble(object):
     def add_tree(self, tree, weight):
         self.trees.append(tree)
         self.weights.append(weight)
+        self.M += 1
 
     def set_initial_constant(self, c):
         self.const = c
 
     def evaluate(self, x, m):
-        evaluation_sum = 0
+        evaluation_sum = self.const
         for i in range(m):
-            tree_evaluation = self.trees[i].evalute(x)
+            tree_evaluation = self.trees[i].evaluate(x)
             tree_addition = self.weights[i] * tree_evaluation
-            evaluation_sum += tree_addition
+            evaluation_sum -= tree_addition
 
         return evaluation_sum
+
+    def __iter__(self):
+        for tree in self.trees:
+            yield tree
 
 if __name__ == "__main__":
     rtn = RegressionTreeNode()
