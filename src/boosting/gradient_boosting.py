@@ -6,11 +6,12 @@ from src.boosting.pratition import Partition
 from src.tree.structure import RegressionTree, RegressionTreeEnsemble, RegressionTreeNode
 
 
-def cart(training_set, max_depth, min_node_size):
+def cart(training_set, max_depth, min_node_size, numThresholds):
     """
     Perform the CART decision tree algorithm
     :param max_depth: 
-    :param min_node_size: 
+    :param min_node_size:
+    :param numThresholds:
     :return: 
     """
 
@@ -29,7 +30,7 @@ def cart(training_set, max_depth, min_node_size):
         # Build tree
         for partition in depth[k]:
             node = partition.get_node()
-            j, s = partition.get_optimal_partition(min_node_size)
+            j, s = partition.get_optimal_partition(min_node_size, numThresholds)
 
             # Partition was found
             if j != -1:
@@ -68,7 +69,7 @@ def create_left_and_right_partition(node, partition, j, s):
     return partition_left, partition_right
 
 
-def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, test_set=None):
+def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, numThresholds = None, test_set=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param train_set: 
@@ -76,6 +77,7 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, test_set=Non
     :param max_depth: 
     :param min_node_size:
     :param nu:
+    :param numThresholds:
     :param test_set:
     :return: 
     """
@@ -94,7 +96,7 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, test_set=Non
         instances["y"] = instances.apply(lambda row: -1 * (row['y'] - tree_ensemble.evaluate(row, tree_number, nu)), axis=1)
 
         # Build new tree using CART
-        new_tree = cart(instances, max_depth, min_node_size)
+        new_tree = cart(instances, max_depth, min_node_size, numThresholds)
 
         # Compute new tree weight
         nominator = instances.apply(lambda row: row["y"]*(new_tree.evaluate(row)), axis=1).sum()
