@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class RegressionTreeNode(object):
     # Index of the feature on which we split at this node.
     j = -1
@@ -124,6 +127,19 @@ class RegressionTreeEnsemble(object):
             evaluation_sum -= tree_addition
 
         return evaluation_sum
+
+    def compute_dataset_mse(self, instances, num_trees):
+        squared_error = instances.apply(lambda row: pow(row['y'] - self.evaluate(row, num_trees), 2),
+                                        axis=1).sum()
+
+        mse = squared_error / instances.shape[0]
+        return mse
+
+    def compute_dataset_rmse(self, instances, m):
+        mse = self.compute_dataset_mse(instances)
+        rmse = np.sqrt(mse)
+
+        return rmse
 
     def __iter__(self):
         for tree in self.trees:

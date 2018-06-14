@@ -69,7 +69,7 @@ class TestGradientBoostingMethods(unittest.TestCase):
 
     def test_real_data(self):
         train, test = create_data("../../data/")
-        hyperparameters = GBRTHyperparameters(10, 2, 3, 1, 1, 0)
+        hyperparameters = GBRTHyperparameters(0, 2, 3, 1, 1, 0)
         ensemble = gbrt(train, hyperparameters,  test)
         get_features_importance(ensemble)
 
@@ -100,6 +100,19 @@ class TestGradientBoostingMethods(unittest.TestCase):
         self.assertEqual(tree.evaluate(df.iloc[3]), 3)
         self.assertEqual(tree.evaluate(df.iloc[6]), 18)
         self.assertEqual(tree.evaluate(df.iloc[9]), 20)
+
+    def test_compute_mse(self):
+        x1 = np.arange(12)
+        y = [1] * 3 + [3] * 3 + [16] * 3 + [20] * 3
+
+        df = pd.DataFrame()
+        df["x1"] = x1
+        df["y"] = y
+        dataset = TrainingDataset(df, "y")
+        hyperparameters = GBRTHyperparameters(1, 3, 4, 1, 1, 0)
+        ensemble = gbrt(dataset, hyperparameters)
+
+        self.assertEqual(ensemble.compute_dataset_mse(df, 1), 2.5)
 
 if __name__ == '__main__':
     np.random.seed(125)
