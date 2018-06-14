@@ -69,7 +69,7 @@ def create_left_and_right_partition(node, partition, j, s):
     return partition_left, partition_right
 
 
-def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, numThresholds = None, test_set=None):
+def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=None, test_set=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param train_set: 
@@ -77,7 +77,7 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, numThreshold
     :param max_depth: 
     :param min_node_size:
     :param nu:
-    :param numThresholds:
+    :param num_thresholds:
     :param test_set:
     :return: 
     """
@@ -93,26 +93,31 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu = None, numThreshold
         instances = train_set.sample_minibatch()
 
         # Compute residual for each instance in mini-batch
-        instances["y"] = instances.apply(lambda row: -1 * (row['y'] - tree_ensemble.evaluate(row, tree_number, nu)), axis=1)
+        instances["y"] = instances.apply(lambda row: -1 * (row['y'] - tree_ensemble.evaluate(row, tree_number)), axis=1)
 
         # Build new tree using CART
-        new_tree = cart(instances, max_depth, min_node_size, numThresholds)
+        new_tree = cart(instances, max_depth, min_node_size, num_thresholds)
 
         # Compute new tree weight
         nominator = instances.apply(lambda row: row["y"]*(new_tree.evaluate(row)), axis=1).sum()
         denominator = instances.apply(lambda row: (new_tree.evaluate(row))**2, axis=1).sum()
-        weight = nominator / denominator
+        weight = nominator / denominator * nu
 
         # Add tree to ensemble
         tree_ensemble.add_tree(new_tree, weight)
 
         # Compute training error
-        train_instances = train_set.get_dataframe_copy()
-        cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number+1), 2, nu), axis=1).sum()
-        print("Cost after {} trees is : {}".format(tree_number+1, cost / train_instances.shape[0]))
-        print("New Tree weight = {}".format(weight))
+        print_train_test_error()
 
     return tree_ensemble
+
+
+def print_train_test_error(train_set, test_set, ensemble, num_trees):
+    train_instances = train_set.get_dataframe_copy()
+    cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
+                                 axis=1).sum()
+    print("Cost after {} trees is : {}".format(tree_number + 1, cost / train_instances.shape[0]))
+    print("New Tree weight = {}".format(weight))
 
 if __name__ == "__main__":
     np.random.seed(125)
