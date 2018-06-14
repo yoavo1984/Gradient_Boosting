@@ -108,7 +108,10 @@ class RegressionTreeEnsemble(object):
     const = 0
 
     def __init__(self):
-        pass
+        self.trees = []
+        self.weights = []
+        self.M = 0
+        self.const = 0
 
     def add_tree(self, tree, weight):
         self.trees.append(tree)
