@@ -70,7 +70,7 @@ def create_left_and_right_partition(node, partition, j, s):
     return partition_left, partition_right
 
 
-def gbrt(train_set, hyperparameters, test_set=None):
+def gbrt(train_set, hyperparameters, test_set=None, results=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param train_set: 
@@ -106,12 +106,12 @@ def gbrt(train_set, hyperparameters, test_set=None):
 
         # Compute training error
         if test_set:
-            print_train_test_error(train_set, test_set, tree_ensemble, tree_number)
+            print_train_test_error(train_set, test_set, tree_ensemble, tree_number, results)
 
     return tree_ensemble
 
 
-def print_train_test_error(train_set, test_set, tree_ensemble, tree_number):
+def print_train_test_error(train_set, test_set, tree_ensemble, tree_number, results):
     train_instances = train_set.get_dataframe_copy()
     test_instances = test_set.get_dataframe_copy()
 
@@ -123,6 +123,9 @@ def print_train_test_error(train_set, test_set, tree_ensemble, tree_number):
 
     with open("error.txt", "a") as myfile:
         myfile.write("{}. Train rmse = {}| Test rmse = {}".format(tree_number, train_rmse, test_rmse))
+
+    if results is not None:
+        results.append((train_rmse, test_rmse))
 
 if __name__ == "__main__":
     np.random.seed(125)
