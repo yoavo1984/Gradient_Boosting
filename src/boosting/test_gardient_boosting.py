@@ -1,6 +1,8 @@
 import unittest
 import numpy as np
 import pandas as pd
+
+from src.boosting.boosting_hyperparameters import CARTHyperparameters, GBRTHyperparameters
 from src.boosting.gradient_boosting import cart, gbrt
 from src.dataset.training_dataset import TrainingDataset
 from src.dataset.dataset_loader import create_data
@@ -20,7 +22,8 @@ class TestGradientBoostingMethods(unittest.TestCase):
         df["x1"] = x1
         df["y"] = y
 
-        tree = cart(df, 3, 3)
+        hyperparameters = CARTHyperparameters(3, 3, 0)
+        tree = cart(df, hyperparameters)
         self.assertEqual(tree.root.s, 4)
         self.assertEqual(tree.root.left_descendant.const, 1)
         self.assertEqual(tree.root.right_descendant.const, 10)
@@ -33,7 +36,8 @@ class TestGradientBoostingMethods(unittest.TestCase):
         df["x1"] = x1
         df["y"] = y
 
-        tree = cart(df, 3, 4)
+        hyperparameters = CARTHyperparameters(3, 4, 0)
+        tree = cart(df, hyperparameters)
         self.assertEqual(tree.root.s, 5)
         self.assertEqual(tree.root.left_descendant.const, 2)
         self.assertEqual(tree.root.right_descendant.const, 15)
@@ -65,9 +69,9 @@ class TestGradientBoostingMethods(unittest.TestCase):
 
     def test_real_data(self):
         train, test = create_data("../../data/")
-        ensemble = gbrt(train, 10, 2, 3, 1, 0, test)
+        hyperparameters = GBRTHyperparameters(10, 2, 3, 1, 1, 0)
+        ensemble = gbrt(train, hyperparameters,  test)
         get_features_importance(ensemble)
-        print(test)
 
     def test_tree_cart_evaluation(self):
         x1 = np.arange(12)
@@ -77,7 +81,8 @@ class TestGradientBoostingMethods(unittest.TestCase):
         df["x1"] = x1
         df["y"] = y
 
-        tree = cart(df, 3, 4)
+        hyperparameters = CARTHyperparameters(3, 4, 0)
+        tree = cart(df, hyperparameters)
         self.assertEqual(tree.evaluate(df.iloc[0]), 2)
         self.assertEqual(tree.evaluate(df.iloc[8]), 15)
 
@@ -89,8 +94,8 @@ class TestGradientBoostingMethods(unittest.TestCase):
         df["x1"] = x1
         df["y"] = y
 
-
-        tree = cart(df, 3, 2)
+        hyperparameters = CARTHyperparameters(3, 2, 0)
+        tree = cart(df, hyperparameters)
         self.assertEqual(tree.evaluate(df.iloc[0]), 1)
         self.assertEqual(tree.evaluate(df.iloc[3]), 3)
         self.assertEqual(tree.evaluate(df.iloc[6]), 18)

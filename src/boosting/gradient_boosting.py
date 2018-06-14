@@ -31,7 +31,7 @@ def cart(training_set, hyperparameters):
         # Build tree
         for partition in depth[k]:
             node = partition.get_node()
-            j, s = partition.get_optimal_partition(hyperparameters.min_node_size, hyperparameters.num_thresholds)
+            j, s = partition.get_optimal_partition(hyperparameters.min_node_size, hyperparameters.num_threshold)
 
             # Partition was found
             if j != -1:

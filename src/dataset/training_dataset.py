@@ -10,7 +10,7 @@ class TrainingDataset(Dataset):
         super().__init__(data_subset, target_name)
         self.fill_missing_values()
 
-    def code_categorial_features(self):
+    def code_categorical_features(self):
         """
         For each possible value (including None) of feature i compute the average of target.
         Randk the values according to the average compute value(ascending).
@@ -61,7 +61,7 @@ class TrainingDataset(Dataset):
 
     def fill_missing_values(self):
         self.mean_imputation()
-        self.code_categorial_features()
+        self.code_categorical_features()
 
     def get_sample_mean(self, sample):
         return sample.y.mean()
