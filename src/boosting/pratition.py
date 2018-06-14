@@ -50,7 +50,7 @@ class Partition(object):
 
         return values
 
-    def get_optimal_partition(self, min_node_size, num_thresholds):
+    def get_optimal_partition(self, min_node_size, num_thresholds=0):
         instances = self.instances
         found_partition = False
 

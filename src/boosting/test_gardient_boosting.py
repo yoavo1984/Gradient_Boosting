@@ -65,8 +65,7 @@ class TestGradientBoostingMethods(unittest.TestCase):
 
     def test_real_data(self):
         train, test = create_data("../../data/")
-
-        ensemble = gbrt(train, 10, 2, 3, test_set=test)
+        ensemble = gbrt(train, 10, 2, 3, 1, 0, test)
         get_features_importance(ensemble)
         print(test)
 

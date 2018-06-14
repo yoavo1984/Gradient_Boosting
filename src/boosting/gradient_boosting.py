@@ -6,7 +6,8 @@ from src.boosting.pratition import Partition
 from src.tree.structure import RegressionTree, RegressionTreeEnsemble, RegressionTreeNode
 
 
-def cart(training_set, max_depth, min_node_size, num_thresholds=-1):
+
+def cart(training_set, max_depth, min_node_size, num_thresholds=0):
     """
     Perform the CART decision tree algorithm
     :param max_depth: 
@@ -105,20 +106,25 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=-1
 
         # Add tree to ensemble
         tree_ensemble.add_tree(new_tree, weight)
+        print("New Tree weight = {}".format(weight))
 
         # Compute training error
         print_train_test_error(1,2,3,4)
+        if test_set:
+            print_train_test_error(train_set, test_set, tree_ensemble, tree_number)
 
     return tree_ensemble
 
 
-def print_train_test_error(train_set, test_set, ensemble, num_trees):
-    return
+def print_train_test_error(train_set, test_set, tree_ensemble, tree_number):
     train_instances = train_set.get_dataframe_copy()
-    cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
+    test_instances = test_set.get_dataframe_copy()
+    train_cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
                                  axis=1).sum()
-    print("Cost after {} trees is : {}".format(tree_number + 1, cost / train_instances.shape[0]))
-    print("New Tree weight = {}".format(weight))
+    test_cost = test_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
+                                       axis=1).sum()
+    print("Train cost after {} trees is : {}".format(tree_number + 1, np.sqrt((train_cost / train_instances.shape[0]))))
+    print("Test cost after {} trees is : {}".format(tree_number + 1, np.sqrt(test_cost / test_instances.shape[0])))
 
 if __name__ == "__main__":
     np.random.seed(125)
