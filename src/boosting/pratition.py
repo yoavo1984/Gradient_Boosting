@@ -34,20 +34,23 @@ class Partition(object):
 
         return left_cost + right_cost
 
-    def get_values_to_consider(self, df, numThresholds):
+    @staticmethod
+    def get_values_to_consider(df, num_thresholds):
         values = []
-        if numThresholds == 0 or numThresholds == 100:
+        if num_thresholds == 0:
             values = df.unique()
         else:
-            jump_value = int(100 / numThresholds)
+            # we want number of inner quantiles to be num_threshold
+            num_thresholds += 1
+            jump_value = int(100 / num_thresholds)
             quantile = jump_value
-            for curr_quantile in range(0, numThresholds):
+            for curr_quantile in range(0, num_thresholds-1):
                 values.append(df.quantile(q=quantile, axis=0))
                 quantile += jump_value
 
         return values
 
-    def get_optimal_partition(self, min_node_size, numThresholds):
+    def get_optimal_partition(self, min_node_size, num_thresholds):
         instances = self.instances
         found_partition = False
 
@@ -56,7 +59,7 @@ class Partition(object):
 
         for feature in instances.columns[:-1]:
             # values = instances[feature].unique()
-            values = get_values_to_consider(self, instances[feature], numThresholds)
+            values = Partition.get_values_to_consider(instances[feature], num_thresholds)
             for val in values:
                 left = instances[instances[feature] <= val]
                 right = instances[instances[feature] > val]
