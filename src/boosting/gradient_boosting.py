@@ -6,12 +6,12 @@ from src.boosting.pratition import Partition
 from src.tree.structure import RegressionTree, RegressionTreeEnsemble, RegressionTreeNode
 
 
-def cart(training_set, max_depth, min_node_size, numThresholds):
+def cart(training_set, max_depth, min_node_size, num_thresholds=-1):
     """
     Perform the CART decision tree algorithm
     :param max_depth: 
     :param min_node_size:
-    :param numThresholds:
+    :param num_thresholds:
     :return: 
     """
 
@@ -30,7 +30,7 @@ def cart(training_set, max_depth, min_node_size, numThresholds):
         # Build tree
         for partition in depth[k]:
             node = partition.get_node()
-            j, s = partition.get_optimal_partition(min_node_size, numThresholds)
+            j, s = partition.get_optimal_partition(min_node_size, num_thresholds)
 
             # Partition was found
             if j != -1:
@@ -69,7 +69,7 @@ def create_left_and_right_partition(node, partition, j, s):
     return partition_left, partition_right
 
 
-def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=None, test_set=None):
+def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=-1, test_set=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param train_set: 
@@ -107,12 +107,13 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=No
         tree_ensemble.add_tree(new_tree, weight)
 
         # Compute training error
-        print_train_test_error()
+        print_train_test_error(1,2,3,4)
 
     return tree_ensemble
 
 
 def print_train_test_error(train_set, test_set, ensemble, num_trees):
+    return
     train_instances = train_set.get_dataframe_copy()
     cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
                                  axis=1).sum()

@@ -38,6 +38,17 @@ class TestGradientBoostingMethods(unittest.TestCase):
         self.assertEqual(tree.root.left_descendant.const, 2)
         self.assertEqual(tree.root.right_descendant.const, 15)
 
+    def nottest_print_sub_tree(self):
+        x1 = np.arange(10)
+        y = [1] * 5 + [10] * 5
+
+        df = pd.DataFrame()
+        df["x1"] = x1
+        df["y"] = y
+
+        tree = cart(df, 3, 3)
+        tree.root.print_sub_tree()
+
     def nottest_gbrt_residual(self):
         x1 = np.arange(12)
         y = [1] * 3 + [3] * 3 + [10] * 3 + [20] * 3
@@ -55,7 +66,7 @@ class TestGradientBoostingMethods(unittest.TestCase):
     def test_real_data(self):
         train, test = create_data("../../data/")
 
-        ensemble = gbrt(train, 10, 2, 3, test)
+        ensemble = gbrt(train, 10, 2, 3, test_set=test)
         get_features_importance(ensemble)
         print(test)
 
