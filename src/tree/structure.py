@@ -104,15 +104,12 @@ class RegressionTreeEnsemble(object):
     def set_initial_constant(self, c):
         self.const = c
 
-    def evaluate(self, x, m, nu = None):
+    def evaluate(self, x, m):
         evaluation_sum = self.const
         for i in range(m):
             tree_evaluation = self.trees[i].evaluate(x)
-            # if nu is given, dampen effect of tree weight by nu.
-            if nu:
-                tree_addition = nu * self.weights[i] * tree_evaluation
-            else:
-                tree_addition = self.weights[i] * tree_evaluation
+
+            tree_addition = self.weights[i] * tree_evaluation
             evaluation_sum -= tree_addition
 
         return evaluation_sum
