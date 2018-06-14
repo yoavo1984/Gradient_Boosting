@@ -129,14 +129,17 @@ class RegressionTreeEnsemble(object):
         return evaluation_sum
 
     def compute_dataset_mse(self, instances, num_trees):
+        if num_trees == -1:
+            num_trees = self.M
+
         squared_error = instances.apply(lambda row: pow(row['y'] - self.evaluate(row, num_trees), 2),
                                         axis=1).sum()
 
         mse = squared_error / instances.shape[0]
         return mse
 
-    def compute_dataset_rmse(self, instances, m):
-        mse = self.compute_dataset_mse(instances)
+    def compute_dataset_rmse(self, instances, num_trees=-1):
+        mse = self.compute_dataset_mse(instances,num_trees)
         rmse = np.sqrt(mse)
 
         return rmse

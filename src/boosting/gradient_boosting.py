@@ -115,13 +115,14 @@ def print_train_test_error(train_set, test_set, tree_ensemble, tree_number):
     train_instances = train_set.get_dataframe_copy()
     test_instances = test_set.get_dataframe_copy()
 
-    train_cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
-                                 axis=1).sum()
-    test_cost = test_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
-                                       axis=1).sum()
+    train_rmse = tree_ensemble.compute_dataset_rmse(train_instances, tree_number+1)
+    test_rmse = tree_ensemble.compute_dataset_rmse(test_instances, tree_number+1)
 
-    print("Train cost after {} trees is : {}".format(tree_number + 1, np.sqrt((train_cost / train_instances.shape[0]))))
-    print("Test cost after {} trees is : {}".format(tree_number + 1, np.sqrt(test_cost / test_instances.shape[0])))
+    print("Train cost after {} trees is : {}".format(tree_number + 1, train_rmse))
+    print("Test cost after {} trees is : {}".format(tree_number + 1, test_rmse))
+
+    with open("error.txt", "a") as myfile:
+        myfile.write("{}. Train rmse = {}| Test rmse = {}".format(tree_number, train_rmse, test_rmse))
 
 if __name__ == "__main__":
     np.random.seed(125)
