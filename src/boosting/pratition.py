@@ -45,7 +45,7 @@ class Partition(object):
             jump_value = int(100 / num_thresholds)
             quantile = jump_value
             for curr_quantile in range(0, num_thresholds-1):
-                values.append(df.quantile(q=quantile, axis=0))
+                values.append(df.quantile(q=quantile / 100.0))
                 quantile += jump_value
 
         return values
@@ -58,7 +58,6 @@ class Partition(object):
         best_partition = (float("inf"), 0, 0)
 
         for feature in instances.columns[:-1]:
-            # values = instances[feature].unique()
             values = Partition.get_values_to_consider(instances[feature], num_thresholds)
             for val in values:
                 left = instances[instances[feature] <= val]
