@@ -43,7 +43,18 @@ class RegressionTreeNode(object):
         return self.left_descendant, self.right_descendant
 
     def print_sub_tree(self):
-        pass
+        def print_node(node):
+            if node.is_leaf():
+                print("return {}".format(node.const))
+                return
+
+            print("if x[\'{}\']<={} then:\n\t".format(node.j, node.s), end="")
+            print_node(node.left_descendant)
+
+            print("if x[\'{}\']>{} then:\n\t".format(node.j, node.s), end="")
+            print_node(node.right_descendant)
+
+        print_node(self)
 
     def is_leaf(self):
         return self.leaf
