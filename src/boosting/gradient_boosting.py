@@ -6,10 +6,10 @@ from src.boosting.pratition import Partition
 from src.tree.structure import RegressionTree, RegressionTreeEnsemble, RegressionTreeNode
 
 
-
-def cart(training_set, max_depth, min_node_size, num_thresholds=0):
+def cart(training_set, hyperparameters):
     """
     Perform the CART decision tree algorithm
+    :param training_set: 
     :param max_depth: 
     :param min_node_size:
     :param num_thresholds:
@@ -21,17 +21,17 @@ def cart(training_set, max_depth, min_node_size, num_thresholds=0):
     tree = RegressionTree(root)
 
     # Build a list of partition for each depth
-    depth = [[] for _ in range(max_depth)]
+    depth = [[] for _ in range(hyperparameters.max_depth)]
 
     # Create the first partition
     root_partition = Partition(training_set, root)
 
     depth[0].append(root_partition)
-    for k in range(max_depth-1):
+    for k in range(hyperparameters.max_depth-1):
         # Build tree
         for partition in depth[k]:
             node = partition.get_node()
-            j, s = partition.get_optimal_partition(min_node_size, num_thresholds)
+            j, s = partition.get_optimal_partition(hyperparameters.min_node_size, hyperparameters.num_thresholds)
 
             # Partition was found
             if j != -1:
@@ -48,7 +48,7 @@ def cart(training_set, max_depth, min_node_size, num_thresholds=0):
                 node.make_terminal(const)
 
     # Go over last level in the tree and make all nodes leaves.
-    for partition in depth[max_depth-1]:
+    for partition in depth[hyperparameters.max_depth-1]:
         node = partition.get_node()
         const = partition.get_partition_average()
         node.make_terminal(const)
@@ -70,15 +70,11 @@ def create_left_and_right_partition(node, partition, j, s):
     return partition_left, partition_right
 
 
-def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=-1, test_set=None):
+def gbrt(train_set, hyperparameters, test_set=None):
     """
     Preform the Gradient Boosted regression tree algorithm.
     :param train_set: 
-    :param num_trees: 
-    :param max_depth: 
-    :param min_node_size:
-    :param nu:
-    :param num_thresholds:
+    :param hyperparameters:
     :param test_set:
     :return: 
     """
@@ -89,27 +85,26 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=-1
     f0 = train_set.get_dataset_target_mean()
     tree_ensemble.set_initial_constant(f0)
 
-    for tree_number in range(num_trees):
+    for tree_number in range(hyperparameters.num_trees):
         # Get mini batch from training set
-        instances = train_set.sample_minibatch()
+        instances = train_set.sample_minibatch(hyperparameters.sampling_portion)
 
         # Compute residual for each instance in mini-batch
         instances["y"] = instances.apply(lambda row: -1 * (row['y'] - tree_ensemble.evaluate(row, tree_number)), axis=1)
 
         # Build new tree using CART
-        new_tree = cart(instances, max_depth, min_node_size, num_thresholds)
+        new_tree = cart(instances, hyperparameters.get_cart_hyperparameters())
 
         # Compute new tree weight
         nominator = instances.apply(lambda row: row["y"]*(new_tree.evaluate(row)), axis=1).sum()
         denominator = instances.apply(lambda row: (new_tree.evaluate(row))**2, axis=1).sum()
-        weight = nominator / denominator * nu
+        weight = nominator / denominator * hyperparameters.shrinkage
 
         # Add tree to ensemble
         tree_ensemble.add_tree(new_tree, weight)
         print("New Tree weight = {}".format(weight))
 
         # Compute training error
-        print_train_test_error(1,2,3,4)
         if test_set:
             print_train_test_error(train_set, test_set, tree_ensemble, tree_number)
 
@@ -119,10 +114,12 @@ def gbrt(train_set, num_trees, max_depth, min_node_size, nu=1, num_thresholds=-1
 def print_train_test_error(train_set, test_set, tree_ensemble, tree_number):
     train_instances = train_set.get_dataframe_copy()
     test_instances = test_set.get_dataframe_copy()
+
     train_cost = train_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
                                  axis=1).sum()
     test_cost = test_instances.apply(lambda row: pow(row['y'] - tree_ensemble.evaluate(row, tree_number + 1), 2),
                                        axis=1).sum()
+
     print("Train cost after {} trees is : {}".format(tree_number + 1, np.sqrt((train_cost / train_instances.shape[0]))))
     print("Test cost after {} trees is : {}".format(tree_number + 1, np.sqrt(test_cost / test_instances.shape[0])))
 
