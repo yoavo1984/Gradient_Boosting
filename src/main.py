@@ -1,8 +1,11 @@
 import time
+import pickle
 
 from src.boosting.boosting_hyperparameters import GBRTHyperparameters
 from src.boosting.gradient_boosting import gbrt
 from src.dataset.dataset_loader import create_data
+from src.deliverable.deliverable_generation import generate_deliverable
+from src.deliverable.deliverable_plotting import plot_deliverable
 
 path_to_file = "../data/"
 
@@ -15,7 +18,7 @@ def parse_configuration_file():
     return GBRTHyperparameters(*configuration,)
 
 
-if __name__ == "__main__":
+def main():
     # Get train,test dataset and hyperparameters from file.
     train, test = create_data(path_to_file)
     hyperparameters = parse_configuration_file()
@@ -35,14 +38,23 @@ if __name__ == "__main__":
 
     # Write hyperparameters, statistics and training time to file.
     with open("outcome.txt", "w") as outcome_file:
-        outcome_file.write("HyperParameters:\n" + "="*20 + "\n")
+        outcome_file.write("HyperParameters:\n" + "=" * 20 + "\n")
         outcome_file.write("{}".format(str(hyperparameters)))
 
-        outcome_file.write("\n\nErrors:\n" + "="*20)
+        outcome_file.write("\n\nErrors:\n" + "=" * 20)
         outcome_file.write("\nTrain error = {}".format(train_rmse))
         outcome_file.write("\nTest error = {}".format(test_rmse))
 
-        outcome_file.write("\n\nRunningTime:\n" + "="*20 + "\n")
+        outcome_file.write("\n\nRunningTime:\n" + "=" * 20 + "\n")
         outcome_file.write("{}".format(training_time))
 
+
+def run_deliverable():
+    train, test = create_data(path_to_file)
+    generate_deliverable(train, test)
+    plot_deliverable()
+
+
+if __name__ == "__main__":
+    run_deliverable()
 

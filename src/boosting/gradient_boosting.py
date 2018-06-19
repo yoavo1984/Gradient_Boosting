@@ -37,7 +37,6 @@ def cart(training_set, hyperparameters):
             if j != -1:
                 partition_left, partition_right = create_left_and_right_partition(node, partition, j, s)
 
-
                 # Add nodes and partitions to the next depth
                 depth[k+1].append(partition_left)
                 depth[k+1].append(partition_right)
