@@ -9,14 +9,14 @@ from src.dataset.training_dataset import TrainingDataset
 
 
 def read_data(path_to_file):
-    DATA_PATH = os.path.join(path_to_file, 'train.csv')
-    COPY_PATH = os.path.join(path_to_file, 'train_Copy.csv')
+    DATA_PATH = os.path.join(path_to_file, 'songs.csv')
+    COPY_PATH = os.path.join(path_to_file, 'songs_Copy.csv')
     # Read the data file.
     df_all = pd.read_csv(DATA_PATH)
     # save a copy of the data
     copyfile(DATA_PATH, COPY_PATH)
     # Remove the id field.
-    df_all.drop(['Id'], axis=1, inplace=True)
+    # df_all.drop(['Id'], axis=1, inplace=True)
     # Remove entries for which the Saleprice attribute is not known.
     df_all = df_all[np.isfinite(df_all['SalePrice'])]
 
