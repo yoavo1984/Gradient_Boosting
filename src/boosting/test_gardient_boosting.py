@@ -8,6 +8,8 @@ from src.dataset.training_dataset import TrainingDataset
 from src.dataset.dataset_loader import create_data
 from src.evaluators.feature_importance import get_features_importance
 
+DEFAULT_HYPERPARAMETERS = [100, 1, 2, 1, 1, 0]
+
 
 class TestGradientBoostingMethods(unittest.TestCase):
     # def test_cart(self):
@@ -63,6 +65,23 @@ class TestGradientBoostingMethods(unittest.TestCase):
         dataset = TrainingDataset(df, "SalePrice")
 
         ensemble = gbrt(dataset, 1, 3, 4)
+
+        self.assertEqual(ensemble.evaluate(df.iloc[0], 1), 2)
+        self.assertEqual(ensemble.evaluate(df.iloc[9], 1), 15)
+
+    def test_gbrt_residual(self):
+        x1 = np.arange(6)
+        y = [0, 2, 100, 102, 106, 109.5]
+
+
+        df = pd.DataFrame()
+        df["x1"] = x1
+        df["y"] = y
+
+        hyperparameters = GBRTHyperparameters(*DEFAULT_HYPERPARAMETERS, )
+        dataset = TrainingDataset(df, "SalePrice")
+
+        ensemble = gbrt(dataset, hyperparameters)
 
         self.assertEqual(ensemble.evaluate(df.iloc[0], 1), 2)
         self.assertEqual(ensemble.evaluate(df.iloc[9], 1), 15)

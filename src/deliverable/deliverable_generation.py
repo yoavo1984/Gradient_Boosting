@@ -11,7 +11,7 @@ DEPTH_OPTIONS = [2,3,4]
 THRESHOLD_OPTIONS = [1, 3, 5, 10, 20]
 SAMPLING_OPTIONS = [0.1, 0.3, 0.5, 0.8, 1]
 
-DEFAULT_HYPERPARAMETERS = [100, 5, 3, 1, 0.1, 0]
+DEFAULT_HYPERPARAMETERS = [100, 5, 3, 0.1, 0.3, 0]
 
 
 def iterate_depth_parameter(train_set, test_set):
