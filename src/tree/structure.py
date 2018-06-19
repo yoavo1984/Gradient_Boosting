@@ -147,7 +147,7 @@ class RegressionTreeEnsemble(object):
 
         return rmse
 
-    def print_ensemble(self, number_of_trees=-1):
+    def print_ensemble_trees(self, number_of_trees=-1):
         if number_of_trees == -1:
             return
 
