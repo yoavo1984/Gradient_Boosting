@@ -147,10 +147,16 @@ class RegressionTreeEnsemble(object):
 
         return rmse
 
+    def print_ensemble(self, number_of_trees=-1):
+        if number_of_trees == -1:
+            return
+
+        for i in range(number_of_trees):
+            self.trees[i].root.print_sub_tree()
+
     def __iter__(self):
         for tree in self.trees:
             yield tree
 
 if __name__ == "__main__":
     rtn = RegressionTreeNode()
-    print (rtn.get_a())
