@@ -6,12 +6,13 @@ import time
 
 from src.boosting.boosting_hyperparameters import GBRTHyperparameters
 from src.boosting.gradient_boosting import gbrt
+from src.evaluators.feature_importance import get_features_importance
 
 DEPTH_OPTIONS = [2,3,4]
 THRESHOLD_OPTIONS = [1, 3, 5, 10, 20]
 SAMPLING_OPTIONS = [0.1, 0.3, 0.5, 0.8, 1]
 
-DEFAULT_HYPERPARAMETERS = [100, 5, 3, 0.1, 0.3, 0]
+DEFAULT_HYPERPARAMETERS = [100, 5, 3, 0.25, 0.3, 10]
 
 
 def iterate_depth_parameter(train_set, test_set):
@@ -68,7 +69,18 @@ def iterate_sample_parameter(train_set, test_set):
         pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+def generate_feature_importance_data():
+    # Load model from file
+    with open('model_2018-06-20_18:23:02.pickle', 'rb') as handle:
+        model = pickle.load(handle)
+    # Print first 5 trees
+    model.print_ensemble_trees(5)
+    get_feature_importance = get_features_importance(model)
+    print (get_feature_importance)
+
+
 def generate_deliverable(train_set, test_set):
-    iterate_depth_parameter(train_set, test_set)
-    iterate_threshold_parameter(train_set, test_set)
-    iterate_sample_parameter(train_set, test_set)
+    # iterate_depth_parameter(train_set, test_set)
+    # iterate_threshold_parameter(train_set, test_set)
+    # iterate_sample_parameter(train_set, test_set)
+    generate_feature_importance_data()
