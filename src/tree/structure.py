@@ -46,19 +46,23 @@ class RegressionTreeNode(object):
         return self.left_descendant, self.right_descendant
 
     def print_sub_tree(self):
-        def print_node(node):
+        print("-"*50)
+
+        def print_node(node, depth):
             if node.is_leaf():
-                print("return {}".format(node.const))
+                print("\t"*depth + "return {}".format(node.const))
                 return
 
-            print("if x[\'{}\']<={} then:\n\t".format(node.j, node.s), end="")
-            print_node(node.left_descendant)
+            print("\t"*depth + "if x[\'{}\']<={} then:\n".format(node.j, node.s), end="")
+            print_node(node.left_descendant, depth+1)
 
-            print("if x[\'{}\']>{} then:\n\t".format(node.j, node.s), end="")
-            print_node(node.right_descendant)
+            print("\t"*depth + "if x[\'{}\']>{} then:\n".format(node.j, node.s), end="")
+            print_node(node.right_descendant, depth+1)
 
-        print_node(self)
+        print_node(self, 0)
 
+        print("-" * 50)
+        
     def is_leaf(self):
         return self.leaf
 
