@@ -57,7 +57,9 @@ class Partition(object):
         # We will save the best partition cost, feature and feature value.
         best_partition = (float("inf"), 0, 0)
 
-        for feature in instances.columns[:-1]:
+        features = instances.columns.drop('y')
+
+        for feature in features:
             values = Partition.get_values_to_consider(instances[feature], num_thresholds)
             for val in values:
                 left = instances[instances[feature] <= val]
