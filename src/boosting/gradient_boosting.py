@@ -25,6 +25,7 @@ def cart(training_set, hyperparameters):
 
     # Create the first partition
     root_partition = Partition(training_set, root)
+    root.error = root_partition.get_error()
 
     depth[0].append(root_partition)
     for k in range(hyperparameters.max_depth-1):
@@ -83,7 +84,6 @@ def gbrt(train_set, hyperparameters, test_set=None, results=None):
     # Compute f_0
     f0 = train_set.get_dataset_target_mean()
     tree_ensemble.set_initial_constant(f0)
-    print (test_set)
     print_train_test_error(train_set, test_set, tree_ensemble, -1, results)
 
     for tree_number in range(hyperparameters.num_trees):
