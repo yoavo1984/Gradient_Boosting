@@ -2,7 +2,7 @@ def compute_node_goodness(node, tree_features_dict):
     if node.is_leaf():
         return
 
-    goodness = (node.right_descendant.error + node.left_descendant.error) - node.error
+    goodness = node.error - (node.right_descendant.error + node.left_descendant.error)
     j = node.j
     if j not in tree_features_dict:
         tree_features_dict[j] = 0

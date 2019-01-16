@@ -84,7 +84,6 @@ def gbrt(train_set, hyperparameters, test_set=None, results=None):
     # Compute f_0
     f0 = train_set.get_dataset_target_mean()
     tree_ensemble.set_initial_constant(f0)
-    print_train_test_error(train_set, test_set, tree_ensemble, -1, results)
 
     for tree_number in range(hyperparameters.num_trees):
         # Get mini batch from training set
@@ -123,15 +122,7 @@ def print_train_test_error(train_set, test_set, tree_ensemble, tree_number, resu
     print("Test cost after {} trees is : {}".format(tree_number + 1, test_rmse))
 
     with open("error.txt", "a") as myfile:
-        myfile.write("{}. Train rmse = {}| Test rmse = {}".format(tree_number, train_rmse, test_rmse))
+        myfile.write("{}. Train rmse = {}| Test rmse = {}\n".format(tree_number, train_rmse, test_rmse))
 
     if results is not None:
         results.append((train_rmse, test_rmse))
-
-if __name__ == "__main__":
-    np.random.seed(125)
-
-    data = np.random.randint(0, 20, size=(10,3))
-    df = pd.DataFrame(data, columns=["x1", "x2", "y"])
-    tree = cart(df, 3, 2)
-    print(tree)

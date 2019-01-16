@@ -1,2 +1,2 @@
-num_trees:max_depth:min_node_size:shrinkage:sampling_portion:num_threshold:
-1, 3, 5, 1, 1, 0
+num_trees:min_node_size:max_depth:shrinkage:sampling_portion:num_threshold:
+100, 10, 4, 0.25, 0.5, 5

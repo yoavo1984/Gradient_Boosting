@@ -1,0 +1,8 @@
+Follow this steps to start the program:
+
+1. Go to src folder.
+2. Open the configuration file and choose the hyperparameters you desire.
+3. Run the main.py file. * We used python 3.6.4
+4. Sit back and enjoy.
+5. At the end of the run, the hyperparameters, errors and runtime will be printed to a file called outcome.txt.
+   You can see an example file under src.

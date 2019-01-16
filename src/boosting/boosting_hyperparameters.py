@@ -14,9 +14,6 @@ class GBRTHyperparameters(object):
         self.sampling_portion = float(sampling_portion)
         self.num_threshold = int(num_threshold)
 
-    def set_value(self, key ,value):
-        self[key] = value
-
     def get_cart_hyperparameters(self):
         return CARTHyperparameters(self.max_depth, self.min_node_size, self.num_threshold)
 

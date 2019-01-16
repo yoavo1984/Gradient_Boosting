@@ -62,7 +62,7 @@ class RegressionTreeNode(object):
         print_node(self, 0)
 
         print("-" * 50)
-        
+
     def is_leaf(self):
         return self.leaf
 

@@ -1,13 +1,10 @@
 import time
-import pickle
-
 from src.boosting.boosting_hyperparameters import GBRTHyperparameters
 from src.boosting.gradient_boosting import gbrt
 from src.dataset.dataset_loader import create_data
-from src.deliverable.deliverable_generation import generate_deliverable
-from src.deliverable.deliverable_plotting import plot_deliverable
 
 path_to_file = "../data/"
+DATA = "train"
 
 
 def parse_configuration_file():
@@ -20,7 +17,7 @@ def parse_configuration_file():
 
 def main():
     # Get train,test dataset and hyperparameters from file.
-    train, test = create_data(path_to_file)
+    train, test = create_data(path_to_file, DATA)
     hyperparameters = parse_configuration_file()
 
     # Clearing out previous file.
@@ -49,12 +46,6 @@ def main():
         outcome_file.write("{}".format(training_time))
 
 
-def run_deliverable():
-    train, test = create_data(path_to_file)
-    generate_deliverable(train, test)
-    plot_deliverable()
-
-
 if __name__ == "__main__":
-    run_deliverable()
+    main()
 
